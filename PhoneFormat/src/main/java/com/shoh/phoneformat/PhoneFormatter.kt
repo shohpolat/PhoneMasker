@@ -247,8 +247,10 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
                 val textRawLength = text!!.replace(Regex("[+\\s]"), "")
                 if (maskRawLength?.length == textRawLength.length) {
                     listener?.onFilled(true)
+                    isFilled = true
                 } else {
                     listener?.onFilled(false)
+                    isFilled = false
                 }
             }
         }
