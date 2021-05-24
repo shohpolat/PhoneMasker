@@ -25,7 +25,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         const val MAX_NUMBERS = 15
     }
 
-    private var listener: isMaskFilledListener? = null
+    private var listener: IsMaskFilledListener? = null
     private var mMask: String? = null
     private var hasMask = false
     private var hasFlag = false
@@ -212,7 +212,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
 
     }
 
-    fun setOnMaskFilledListener(listener: isMaskFilledListener) {
+    fun setOnMaskFilledListener(listener: IsMaskFilledListener) {
         this.listener = listener
     }
 
@@ -261,7 +261,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         return null
     }
 
-    interface isMaskFilledListener {
+    interface IsMaskFilledListener {
         fun onFilled(isFilled: Boolean)
     }
 
