@@ -7,13 +7,11 @@ import android.text.Selection
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import com.bumptech.glide.RequestBuilder
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.santalu.maskara.Mask
 import com.santalu.maskara.MaskChangedListener
-import com.santalu.maskara.widget.MaskEditText
 import com.shoh.myfirstlibrary.phoneFormatter.Country
 import com.shoh.phoneformat.databinding.PhoneEditTextBinding
 
@@ -24,6 +22,25 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         const val MIN_NUMBERS = 11
         const val MAX_NUMBERS = 15
     }
+
+    private val KAZ = Country(
+        "Kazakhstan",
+        "# ### ### ## ##",
+        "KZ",
+        "https://restcountries.eu/data/kaz.svg",
+        "7",
+        "KAZ"
+    )
+
+    private val RUS = Country(
+        "Russian Federation",
+        "# ### ### ## ##",
+        "RU",
+        "https://restcountries.eu/data/rus.svg",
+        "7",
+        "RUS"
+    )
+    private var currentCountry: String? = null
 
     private var listener: IsMaskFilledListener? = null
     private var mMask: String? = null
@@ -150,7 +167,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
 
                     }
                 }
-                println("applying mask = ${mMask}")
+                println("applying mask = ${mMask}, country = ${currentCountry}")
             }
         }
     }
@@ -169,6 +186,26 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         list?.let {
             this.list = list
         }
+    }
+
+    fun setPhoneWithCode(alpha3code: String, number: String? = null) {
+
+        val country = findCountryByAlphaCode(alpha3code)
+        if (country != null) {
+            currentCountry = country.alpha3code
+            setFlag(country.flag)
+            setMask(country.phoneMask, number)
+        }
+
+    }
+
+    private fun findCountryByAlphaCode(code: String): Country? {
+        list?.forEach {
+            if (code == it.alpha3code) {
+                return it
+            }
+        }
+        return null
     }
 
     fun isNumberFilled() = isFilled
@@ -222,11 +259,26 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
     }
 
     private fun checkCode(code: String): Country? {
-        list?.forEach {
-            if (it.prefixNumber == code.replace(Regex("[+\\s]"), "")) {
-                return it
+        val t = code.replace(Regex("[+\\s]"), "")
+        println(t)
+        if (t == "7") {
+            currentCountry = RUS.alpha3code
+            return RUS
+        } else if (t == "76" || t == "77") {
+            currentCountry = KAZ.alpha3code
+            return KAZ
+        } else if (t.length >= 2 && t[0].toString() == "7" && (t[1].toString() != "6" && t[1].toString() != "7")) {
+            currentCountry = RUS.alpha3code
+            return RUS
+        } else {
+            list?.forEach {
+                if (it.prefixNumber == t) {
+                    currentCountry = it.alpha3code
+                    return it
+                }
             }
         }
+
         return null
     }
 

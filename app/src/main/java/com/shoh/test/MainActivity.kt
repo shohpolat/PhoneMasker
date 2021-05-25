@@ -1,7 +1,7 @@
 package com.shoh.test
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.shoh.test.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -11,7 +11,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.phoneFormatter.setMask("+### ### ##","+123")
+        binding.button.setOnClickListener {
+            binding.phoneformatter.setPhoneWithCode("KAZ")
+        }
 
     }
 }

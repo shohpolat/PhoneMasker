@@ -25,7 +25,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:padding="1dp"
-            android:src="@drawable/ic_globe"
+            android:src="@drawable/ic_uzb"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHeight_percent="0.8"
