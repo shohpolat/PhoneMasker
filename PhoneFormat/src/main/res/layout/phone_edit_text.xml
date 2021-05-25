@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/input_background"
     android:layout_width="match_parent"
     android:layout_height="55dp">
@@ -20,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.15">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:id="@+id/flag"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -31,7 +30,7 @@
             app:layout_constraintHeight_percent="0.8"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.7" />
+            app:layout_constraintWidth_percent="0.6" />
 
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -60,10 +59,10 @@
         android:hint="Введите номер мобилного"
         android:inputType="number"
         android:maxLines="1"
-        app:mask="+##############"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/guideline"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.7" />
+        app:layout_constraintWidth_percent="0.7"
+        app:mask="+##############" />
 </androidx.constraintlayout.widget.ConstraintLayout>
