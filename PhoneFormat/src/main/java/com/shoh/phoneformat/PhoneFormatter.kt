@@ -27,7 +27,6 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
 
     private var listener: IsMaskFilledListener? = null
     private var mMask: String? = null
-    private var hasMask = false
     private var hasFlag = false
     private var textColor: Int? = null
     private var textSize: Float? = null
@@ -36,7 +35,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
     private var list: List<Country>? = null
     private var isFilled: Boolean = false
 
-    private var defaultImage: Int? = null
+    private var placeholderImage: Int? = null
     private var hintText: String? = null
     private var hintColor: Int? = null
 
@@ -60,7 +59,8 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
             background = attribute.getResourceId(R.styleable.PhoneFormatter_background_resource, 0)
         }
         if (attribute.hasValue(R.styleable.PhoneFormatter_placeholder_image)) {
-            defaultImage = attribute.getResourceId(R.styleable.PhoneFormatter_placeholder_image, 0)
+            placeholderImage =
+                attribute.getResourceId(R.styleable.PhoneFormatter_placeholder_image, 0)
         }
         if (attribute.hasValue(R.styleable.PhoneFormatter_hint_text)) {
             hintText = attribute.getString(R.styleable.PhoneFormatter_hint_text)
@@ -87,8 +87,8 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
             binding.inputBackground.setBackgroundResource(background!!)
         }
 
-        if (defaultImage != null) {
-            binding.flag.setImageResource(defaultImage!!)
+        if (placeholderImage != null) {
+            binding.flag.setImageResource(placeholderImage!!)
         }
 
         if (hintText != null) {
@@ -103,9 +103,6 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
 
     }
 
-
-    fun getFlagContainer() = binding.flagContainer
-
     fun setFlag(url: String?) {
         if (url != null) {
             val requestBuilder: RequestBuilder<PictureDrawable> =
@@ -116,17 +113,8 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         }
     }
 
-    fun setMask(mask: String?) {
+    fun setMask(mask: String?, prefix: String? = null) {
         if (mask != null && mask.isNotEmpty()) {
-            mMask = mask
-            addListener(null)
-        } else {
-            cleanUpMask()
-        }
-    }
-
-    fun setMask(mask: String?, prefix: String?) {
-        if (mask != null && mask.isNotEmpty() && prefix != null) {
             mMask = mask
             addListener(prefix)
         } else {
@@ -138,8 +126,6 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         val editable = binding.editText.text
         return editable!!.replace(Regex("[-\\s+]"), "")
     }
-
-    fun getEditText(): MaskEditText = binding.editText
 
     private fun addListener(prefix: String?) {
         mMask?.let {
@@ -179,30 +165,9 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         addListener(null)
     }
 
-    fun showProgressBar() {
-//        binding.progressBar.isVisible = true
-        binding.flag.isVisible = false
-        binding.downArrow.isVisible = false
-    }
-
-    fun showFlag() {
-//        binding.progressBar.isVisible = false
-        binding.flag.isVisible = true
-        binding.downArrow.isVisible = true
-    }
-
     fun setList(list: List<Country>?) {
         list?.let {
             this.list = list
-//            initializeTextWatcher()
-        }
-    }
-
-    fun setPhoneWithMask(phone: String?, mask: String? = DEFAULT_MASK) {
-        if (phone!!.isNotEmpty() && mask!!.isNotEmpty()) {
-            setMask(mask)
-            binding.editText.setText(phone)
-            Selection.setSelection(binding.editText.text, binding.editText.text!!.length)
         }
     }
 
