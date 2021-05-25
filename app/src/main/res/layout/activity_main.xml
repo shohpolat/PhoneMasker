@@ -18,21 +18,4 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.161" />
 
-    <com.shoh.test.FormatPhone
-        android:id="@+id/phoneformatter"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_margin="8dp"
-        app:background_resource="@drawable/phone_input_bg"
-        app:hasFlag="true"
-        app:hint_text="enter phone number"
-        app:layout_constraintTop_toTopOf="parent"
-        app:placeholder_image="@drawable/ic_afg" />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="button"
-        app:layout_constraintTop_toBottomOf="@+id/textview" />
 </androidx.constraintlayout.widget.ConstraintLayout>

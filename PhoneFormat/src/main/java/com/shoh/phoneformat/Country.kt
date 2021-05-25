@@ -1,4 +1,4 @@
-package com.shoh.myfirstlibrary.phoneFormatter
+package com.shoh.phoneformat
 
 import android.os.Parcel
 import android.os.Parcelable

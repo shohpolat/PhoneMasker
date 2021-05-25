@@ -11,9 +11,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.button.setOnClickListener {
-            binding.phoneformatter.setPhoneWithCode("KAZ")
-        }
 
     }
 }
