@@ -277,7 +277,6 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
                 }
             }
         }
-
         return null
     }
 
