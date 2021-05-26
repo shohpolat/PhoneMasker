@@ -40,6 +40,25 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         "7",
         "RUS"
     )
+
+    private val US = Country(
+        "United States of America",
+        "# ### ### ####",
+        "US",
+        "https://restcountries.eu/data/usa.svg",
+        "1",
+        "USA"
+    )
+
+    private val CAN = Country(
+        "Canada",
+        "# ### ### ####",
+        "CA",
+        "https://restcountries.eu/data/can.svg",
+        "1",
+        "CAN"
+    )
+
     private var currentCountry: String? = null
 
     private var maskFilledListener: IsMaskFilledListener? = null
@@ -293,11 +312,19 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         if (t == "7") {
             if (currentCountry != KAZ.alpha3code) {
                 return RUS
+            } else {
+                return KAZ
             }
         } else if (t == "76" || t == "77") {
             return KAZ
         } else if (t.length >= 2 && t[0].toString() == "7" && (t[1].toString() != "6" && t[1].toString() != "7")) {
             return RUS
+        } else if (t == "1") {
+            if (currentCountry != CAN.alpha3code) {
+                return US
+            } else {
+                return CAN
+            }
         } else {
             list?.forEach {
                 if (it.prefixNumber == t) {
