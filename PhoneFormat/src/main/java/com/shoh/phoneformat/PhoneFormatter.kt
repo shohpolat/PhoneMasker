@@ -52,7 +52,6 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
     private var currentMask = ""
     private var list: List<Country>? = null
     private var isFilled: Boolean = false
-    private var isManuallySet = false
 
     private var placeholderImage: Int? = null
     private var hintText: String? = null
@@ -191,7 +190,6 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         binding.placeholder.isVisible = true
         binding.flag.isVisible = false
         mMask = DEFAULT_MASK
-        isManuallySet = false
         countryChangedListener?.onChanged(null)
         addListener(number)
     }
@@ -217,8 +215,6 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
                 } else {
                     setMask("+${country.phoneMask}", country.prefixNumber)
                 }
-                isManuallySet = true
-
             } else {
                 cleanUpMask(number)
             }
@@ -294,9 +290,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         val t = code.replace(Regex("[+\\s]"), "")
         println(t)
         if (t == "7") {
-            if (currentCountry == KAZ.alpha3code) {
-                return null
-            } else {
+            if (currentCountry != KAZ.alpha3code) {
                 return RUS
             }
         } else if (t == "76" || t == "77") {
