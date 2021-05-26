@@ -7,6 +7,7 @@ import android.text.Selection
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import com.bumptech.glide.RequestBuilder
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
@@ -41,7 +42,8 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
     )
     private var currentCountry: String? = null
 
-    private var listener: IsMaskFilledListener? = null
+    private var maskFilledListener: IsMaskFilledListener? = null
+    private var countryChangedListener: OnCountryChangedListener? = null
     private var mMask: String? = null
     private var hasFlag = false
     private var textColor: Int? = null
@@ -104,7 +106,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         }
 
         if (placeholderImage != null) {
-            binding.flag.setImageResource(placeholderImage!!)
+            binding.placeholder.setImageResource(placeholderImage!!)
         }
 
         if (hintText != null) {
@@ -124,8 +126,14 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
             val requestBuilder: RequestBuilder<PictureDrawable> =
                 GlideToVectorYou.init().with(context).requestBuilder
 
+            if (!binding.flag.isVisible) {
+                binding.flag.isVisible = true
+                binding.placeholder.isVisible = false
+            }
+
             requestBuilder.load(url).placeholder(R.drawable.ic_globe).centerCrop()
                 .into(binding.flag)
+
         }
     }
 
@@ -179,6 +187,8 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
 
     fun cleanUpMask(number: String? = null) {
         println("cleaning mask")
+        binding.placeholder.isVisible = true
+        binding.flag.isVisible = false
         mMask = DEFAULT_MASK
         addListener(number)
     }
@@ -232,7 +242,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
     }
 
     fun setOnMaskFilledListener(listener: IsMaskFilledListener) {
-        this.listener = listener
+        this.maskFilledListener = listener
     }
 
     fun initializeTextWatcher() {
@@ -252,10 +262,10 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
             if (mMask == DEFAULT_MASK) {
 
                 if (text.length in MIN_NUMBERS..MAX_NUMBERS) {
-                    listener?.onFilled(true)
+                    maskFilledListener?.onFilled(true)
                     isFilled = true
                 } else {
-                    listener?.onFilled(false)
+                    maskFilledListener?.onFilled(false)
                     isFilled = false
                 }
 
@@ -263,10 +273,10 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
                 val maskRawLength = mMask?.replace(Regex("[+\\s]"), "")
                 val textRawLength = text!!.replace(Regex("[+\\s]"), "")
                 if (maskRawLength?.length == textRawLength.length) {
-                    listener?.onFilled(true)
+                    maskFilledListener?.onFilled(true)
                     isFilled = true
                 } else {
-                    listener?.onFilled(false)
+                    maskFilledListener?.onFilled(false)
                     isFilled = false
                 }
             }
@@ -281,23 +291,36 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
                 return null
             } else {
                 currentCountry = RUS.alpha3code
+                countryChangedListener?.onChanged(RUS)
                 return RUS
             }
         } else if (t == "76" || t == "77") {
             currentCountry = KAZ.alpha3code
+            countryChangedListener?.onChanged(KAZ)
             return KAZ
         } else if (t.length >= 2 && t[0].toString() == "7" && (t[1].toString() != "6" && t[1].toString() != "7")) {
             currentCountry = RUS.alpha3code
+            countryChangedListener?.onChanged(RUS)
             return RUS
         } else {
             list?.forEach {
                 if (it.prefixNumber == t) {
                     currentCountry = it.alpha3code
+                    countryChangedListener?.onChanged(it)
                     return it
                 }
             }
         }
+        countryChangedListener?.onChanged(null)
         return null
+    }
+
+    interface OnCountryChangedListener {
+        fun onChanged(country: Country?)
+    }
+
+    fun setOnCountryChangedListener(onCountryChangedListener: OnCountryChangedListener) {
+        this.countryChangedListener = onCountryChangedListener
     }
 
     interface IsMaskFilledListener {
