@@ -129,7 +129,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         }
     }
 
-    fun setMask(mask: String?, prefix: String? = null) {
+    private fun setMask(mask: String?, prefix: String? = null) {
         if (mask != null && mask.isNotEmpty()) {
             mMask = mask
             addListener(prefix)
@@ -171,14 +171,16 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         }
     }
 
-    fun setFlag(flag: Int) {
-        binding.flag.setImageResource(flag)
+    fun setFlag(flag: Int? = null) {
+        flag?.let {
+            binding.flag.setImageResource(flag)
+        }
     }
 
-    fun cleanUpMask() {
+    fun cleanUpMask(number: String? = null) {
         println("cleaning mask")
         mMask = DEFAULT_MASK
-        addListener(null)
+        addListener(number)
     }
 
     fun setList(list: List<Country>?) {
@@ -187,13 +189,27 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         }
     }
 
-    fun setPhoneWithCode(alpha3code: String, number: String? = null) {
+    fun setPhoneWithCode(alpha3code: String? = null, number: String? = null) {
 
-        val country = findCountryByAlphaCode(alpha3code)
-        if (country != null) {
-            currentCountry = country.alpha3code
-            setFlag(country.flag)
-            setMask(country.phoneMask, number)
+        if (alpha3code != null) {
+            val country = findCountryByAlphaCode(alpha3code)
+            if (country != null) {
+                currentCountry = country.alpha3code
+                setFlag(country.flag)
+
+                if (number != null && number.replace(Regex("[+\\s]"), "")
+                        .startsWith(country.prefixNumber!!)
+                ) {
+                    setMask(country.phoneMask, number)
+                } else {
+                    setMask(country.phoneMask, country.prefixNumber)
+                }
+
+            } else {
+                cleanUpMask(number)
+            }
+        } else {
+            cleanUpMask(number)
         }
 
     }
