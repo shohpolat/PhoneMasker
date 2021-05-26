@@ -279,7 +279,8 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         if (t == "7") {
             currentCountry = RUS.alpha3code
             return RUS
-        } else if (t == "7" && currentCountry == KAZ.alpha3code) {
+        }
+        if (t == "7" && currentCountry == KAZ.alpha3code) {
             return null
         } else if (t == "76" || t == "77") {
             currentCountry = KAZ.alpha3code
