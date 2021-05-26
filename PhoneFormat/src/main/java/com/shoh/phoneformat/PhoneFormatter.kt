@@ -200,9 +200,9 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
                 if (number != null && number.replace(Regex("[+\\s]"), "")
                         .startsWith(country.prefixNumber!!)
                 ) {
-                    setMask(country.phoneMask, number)
+                    setMask("+${country.phoneMask}", number)
                 } else {
-                    setMask(country.phoneMask, country.prefixNumber)
+                    setMask("+${country.phoneMask}", country.prefixNumber)
                 }
 
             } else {
