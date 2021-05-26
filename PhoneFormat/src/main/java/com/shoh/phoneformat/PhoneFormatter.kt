@@ -277,11 +277,12 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         val t = code.replace(Regex("[+\\s]"), "")
         println(t)
         if (t == "7") {
-            currentCountry = RUS.alpha3code
-            return RUS
-        }
-        if (t == "7" && currentCountry == KAZ.alpha3code) {
-            return null
+            if (currentCountry == KAZ.alpha3code) {
+                return null
+            } else {
+                currentCountry = RUS.alpha3code
+                return RUS
+            }
         } else if (t == "76" || t == "77") {
             currentCountry = KAZ.alpha3code
             return KAZ
