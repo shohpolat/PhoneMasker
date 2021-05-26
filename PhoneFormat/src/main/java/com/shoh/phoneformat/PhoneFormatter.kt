@@ -191,6 +191,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         binding.flag.isVisible = false
         mMask = DEFAULT_MASK
         countryChangedListener?.onChanged(null)
+        currentCountry = ""
         addListener(number)
     }
 
