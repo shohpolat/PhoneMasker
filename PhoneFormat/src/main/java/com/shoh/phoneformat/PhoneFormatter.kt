@@ -52,6 +52,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
     private var currentMask = ""
     private var list: List<Country>? = null
     private var isFilled: Boolean = false
+    private var isManuallySet = false
 
     private var placeholderImage: Int? = null
     private var hintText: String? = null
@@ -190,6 +191,8 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         binding.placeholder.isVisible = true
         binding.flag.isVisible = false
         mMask = DEFAULT_MASK
+        isManuallySet = false
+        countryChangedListener?.onChanged(null)
         addListener(number)
     }
 
@@ -214,6 +217,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
                 } else {
                     setMask("+${country.phoneMask}", country.prefixNumber)
                 }
+                isManuallySet = true
 
             } else {
                 cleanUpMask(number)
@@ -253,10 +257,15 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
                 setFlag(R.drawable.ic_globe)
             } else if (text.length <= 6) {
                 val t = checkCode("$text")
-                if (t != null) {
+                if (t != null && currentCountry != t.alpha3code) {
                     setFlag(t.flag)
                     setMask("+${t.phoneMask!!}")
+                    currentCountry = t.alpha3code
+                    countryChangedListener?.onChanged(t)
+                } else {
+                    countryChangedListener?.onChanged(null)
                 }
+
             }
 
             if (mMask == DEFAULT_MASK) {
@@ -290,28 +299,19 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
             if (currentCountry == KAZ.alpha3code) {
                 return null
             } else {
-                currentCountry = RUS.alpha3code
-                countryChangedListener?.onChanged(RUS)
                 return RUS
             }
         } else if (t == "76" || t == "77") {
-            currentCountry = KAZ.alpha3code
-            countryChangedListener?.onChanged(KAZ)
             return KAZ
         } else if (t.length >= 2 && t[0].toString() == "7" && (t[1].toString() != "6" && t[1].toString() != "7")) {
-            currentCountry = RUS.alpha3code
-            countryChangedListener?.onChanged(RUS)
             return RUS
         } else {
             list?.forEach {
                 if (it.prefixNumber == t) {
-                    currentCountry = it.alpha3code
-                    countryChangedListener?.onChanged(it)
                     return it
                 }
             }
         }
-        countryChangedListener?.onChanged(null)
         return null
     }
 
