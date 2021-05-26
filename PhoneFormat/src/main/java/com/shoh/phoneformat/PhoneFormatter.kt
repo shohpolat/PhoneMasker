@@ -262,8 +262,6 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
                     setMask("+${t.phoneMask!!}")
                     currentCountry = t.alpha3code
                     countryChangedListener?.onChanged(t)
-                } else if(t == null) {
-                    countryChangedListener?.onChanged(null)
                 }
 
             }
