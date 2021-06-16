@@ -227,7 +227,6 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
             if (country != null) {
                 currentCountry = country.alpha3code
                 setFlag(country.flag)
-
                 if (number != null && number.replace(Regex("[+\\s]"), "")
                         .startsWith(country.prefixNumber!!)
                 ) {
@@ -256,9 +255,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
     fun isNumberFilled() = isFilled
 
     fun setOnFlagClickListener(listener: OnClickListener) {
-
         binding.flagContainer.setOnClickListener(listener)
-
     }
 
     fun setOnMaskFilledListener(listener: IsMaskFilledListener) {
