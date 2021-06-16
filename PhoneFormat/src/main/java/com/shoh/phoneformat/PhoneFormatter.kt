@@ -23,30 +23,30 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         const val MAX_NUMBERS = 15
     }
 
-    private val KAZ = Country(
-        "Kazakhstan",
-        "# ### ### ## ##",
-        "KZ",
-        "https://restcountries.eu/data/kaz.svg",
-        "7",
-        "KAZ"
-    )
-
-    private val RUS = Country(
-        "Russian Federation",
-        "# ### ### ## ##",
-        "RU",
-        "https://restcountries.eu/data/rus.svg",
-        "7",
-        "RUS"
-    )
+//    private val KAZ = Country(
+//        "Kazakhstan",
+//        "# ### ### ## ##",
+//        "KZ",
+//        "https://restcountries.eu/data/kaz.svg",
+//        "7",
+//        "KAZ"
+//    )
+//
+//    private val RUS = Country(
+//        "Russian Federation",
+//        "# ### ### ## ##",
+//        "RU",
+//        "https://restcountries.eu/data/rus.svg",
+//        "7",
+//        "RUS"
+//    )
 
     private val US = Country(
         "United States of America",
         "# ### ### ####",
         "US",
         "https://restcountries.eu/data/usa.svg",
-        "1",
+        arrayListOf("1"),
         "USA"
     )
 
@@ -55,7 +55,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         "# ### ### ####",
         "CA",
         "https://restcountries.eu/data/can.svg",
-        "1",
+        arrayListOf("1"),
         "CAN"
     )
 
@@ -227,12 +227,15 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
             if (country != null) {
                 currentCountry = country.alpha3code
                 setFlag(country.flag)
-                if (number != null && number.replace(Regex("[+\\s]"), "")
-                        .startsWith(country.prefixNumber!!)
-                ) {
+                if (number != null && country.prefixNumber?.firstOrNull { prefix ->
+                        number.replace(
+                            Regex("[+\\s]"),
+                            ""
+                        ).startsWith(prefix)
+                    } != null) {
                     setMask("+${country.phoneMask}", number)
                 } else {
-                    setMask("+${country.phoneMask}", country.prefixNumber)
+                    setMask("+${country.phoneMask}", country.prefixNumber?.get(0))
                 }
             } else {
                 cleanUpMask(number)
@@ -338,7 +341,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
                 CAN
             }
         } else {
-            list?.firstOrNull { country -> country.prefixNumber?.firstOrNull { prefix -> prefix.toString() == code } != null }
+            list?.firstOrNull { country -> country.prefixNumber?.firstOrNull { prefix -> prefix == code } != null }
         }
     }
 
