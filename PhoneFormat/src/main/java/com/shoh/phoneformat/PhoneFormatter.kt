@@ -19,6 +19,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
 
     companion object {
         const val DEFAULT_MASK = "+##############"
+        const val DEFAULT_COUNTRY = "default_country"
         const val MIN_NUMBERS = 11
         const val MAX_NUMBERS = 15
     }
@@ -189,8 +190,8 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         binding.placeholder.isVisible = true
         binding.flag.isVisible = false
         mMask = DEFAULT_MASK
+        mCountry = DEFAULT_COUNTRY
         countryChangedListener?.onChanged(null)
-        mCountry = null
         addListener(number)
     }
 
