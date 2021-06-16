@@ -22,7 +22,6 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         const val MIN_NUMBERS = 11
         const val MAX_NUMBERS = 15
     }
-
     private val US = Country(
         "United States of America",
         "# ### ### ####",
