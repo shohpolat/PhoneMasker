@@ -23,6 +23,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         const val MIN_NUMBERS = 11
         const val MAX_NUMBERS = 15
     }
+
     private val US = Country(
         "United States of America",
         "# ### ### ####",
@@ -42,7 +43,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
     )
 
     private var currentCountry: String? = null
-    private var mCountry:String? = null
+    private var mCountry: String? = null
 
     private var maskFilledListener: IsMaskFilledListener? = null
     private var countryChangedListener: OnCountryChangedListener? = null
@@ -107,7 +108,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         }
 
         if (placeholderImage != null) {
-            binding.placeholder.setImageResource(placeholderImage!!)
+            binding.flag.setImageResource(placeholderImage!!)
         }
 
         if (hintText != null) {
@@ -126,11 +127,6 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         if (url != null) {
             val requestBuilder: RequestBuilder<PictureDrawable> =
                 GlideToVectorYou.init().with(context).requestBuilder
-
-            if (!binding.flag.isVisible) {
-                binding.flag.isVisible = true
-                binding.placeholder.isVisible = false
-            }
 
             requestBuilder.load(url).placeholder(R.drawable.ic_globe)
                 .into(binding.flag)
@@ -187,8 +183,6 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
     fun cleanUpMask(number: String? = null) {
         println("cleaning mask")
         setFlag(R.drawable.ic_globe)
-        binding.placeholder.isVisible = true
-        binding.flag.isVisible = false
         mMask = DEFAULT_MASK
         mCountry = DEFAULT_COUNTRY
         countryChangedListener?.onChanged(null)

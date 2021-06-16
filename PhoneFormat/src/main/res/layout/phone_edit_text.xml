@@ -24,26 +24,12 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:padding="1dp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHeight_percent="0.8"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.6" />
-
-        <ImageView
-            android:id="@+id/placeholder"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:padding="1dp"
-            android:visibility="visible"
             android:src="@drawable/ic_globe"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHeight_percent="0.8"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent="0.6" />
-
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/down_arrow"
