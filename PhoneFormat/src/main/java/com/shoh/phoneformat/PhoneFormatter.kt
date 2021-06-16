@@ -7,7 +7,6 @@ import android.text.Selection
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import com.bumptech.glide.RequestBuilder
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
@@ -150,26 +149,37 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
 
     private fun addListener(prefix: String?) {
         mMask?.let {
-            if (mCountry != currentCountry) {
-                currentCountry = mCountry
-                val listener = MaskChangedListener(Mask(mMask!!))
-                binding.editText.addTextChangedListener(listener)
-                println("applying mask = ${mMask}, country = ${mCountry}")
-                if (prefix != null) {
-                    binding.editText.setText(prefix)
-                    Selection.setSelection(
-                        binding.editText.text,
-                        binding.editText.text!!.length
-                    )
-                } else {
-                    if (binding.editText.text!!.isNotEmpty()) {
-                        binding.editText.setText(binding.editText.text!!.replace(Regex(" "), ""))
-                        Selection.setSelection(
-                            binding.editText.text,
-                            binding.editText.text!!.length
-                        )
-                    }
+            when (mCountry) {
+                DEFAULT_COUNTRY -> {
+                    currentCountry = null
+                    applyMask(prefix)
                 }
+                currentCountry -> {}
+                else -> {
+                    currentCountry = mCountry
+                    applyMask(prefix)
+                }
+            }
+        }
+    }
+
+    private fun applyMask(prefix: String?) {
+        val listener = MaskChangedListener(Mask(mMask!!))
+        binding.editText.addTextChangedListener(listener)
+        println("applying mask = ${mMask}, country = ${mCountry}")
+        if (prefix != null) {
+            binding.editText.setText(prefix)
+            Selection.setSelection(
+                binding.editText.text,
+                binding.editText.text!!.length
+            )
+        } else {
+            if (binding.editText.text!!.isNotEmpty()) {
+                binding.editText.setText(binding.editText.text!!.replace(Regex(" "), ""))
+                Selection.setSelection(
+                    binding.editText.text,
+                    binding.editText.text!!.length
+                )
             }
         }
     }
