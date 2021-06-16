@@ -341,7 +341,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
                 CAN
             }
         } else {
-            list?.firstOrNull { country -> country.prefixNumber?.firstOrNull { prefix -> prefix == code } != null }
+            list?.firstOrNull { country -> country.prefixNumber?.firstOrNull { prefix -> prefix == t } != null }
         }
     }
 
