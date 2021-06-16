@@ -244,12 +244,8 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
     }
 
     private fun findCountryByAlphaCode(code: String): Country? {
-        list?.forEach {
-            if (code == it.alpha3code) {
-                return it
-            }
-        }
-        return null
+
+        return list?.firstOrNull { code == it.alpha3code }
     }
 
     fun isNumberFilled() = isFilled
@@ -303,33 +299,47 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         }
     }
 
+//    private fun checkCode(code: String): Country? {
+//        val t = code.replace(Regex("[+\\s]"), "")
+//        println(t)
+//        if (t == "7") {
+//            if (currentCountry != KAZ.alpha3code) {
+//                return RUS
+//            } else {
+//                return KAZ
+//            }
+//        } else if (t == "76" || t == "77") {
+//            return KAZ
+//        } else if (t.length >= 2 && t[0].toString() == "7" && (t[1].toString() != "6" && t[1].toString() != "7")) {
+//            return RUS
+//        } else if (t == "1") {
+//            if (currentCountry != CAN.alpha3code) {
+//                return US
+//            } else {
+//                return CAN
+//            }
+//        } else {
+//            list?.forEach {
+//                if (it.prefixNumber == t) {
+//                    return it
+//                }
+//            }
+//        }
+//        return null
+//    }
+
     private fun checkCode(code: String): Country? {
         val t = code.replace(Regex("[+\\s]"), "")
         println(t)
-        if (t == "7") {
-            if (currentCountry != KAZ.alpha3code) {
-                return RUS
-            } else {
-                return KAZ
-            }
-        } else if (t == "76" || t == "77") {
-            return KAZ
-        } else if (t.length >= 2 && t[0].toString() == "7" && (t[1].toString() != "6" && t[1].toString() != "7")) {
-            return RUS
-        } else if (t == "1") {
+        return if (t == "1") {
             if (currentCountry != CAN.alpha3code) {
-                return US
+                US
             } else {
-                return CAN
+                CAN
             }
         } else {
-            list?.forEach {
-                if (it.prefixNumber == t) {
-                    return it
-                }
-            }
+            list?.firstOrNull { country -> country.prefixNumber?.firstOrNull { prefix -> prefix.toString() == code } != null }
         }
-        return null
     }
 
     interface OnCountryChangedListener {
