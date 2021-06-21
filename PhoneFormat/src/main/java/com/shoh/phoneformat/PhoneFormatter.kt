@@ -133,18 +133,21 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
         }
     }
 
-    private fun setMask(mask: String?, prefix: String? = null) {
-        if (mask != null && mask.isNotEmpty()) {
-            mMask = mask
-            addListener(prefix)
-        } else {
-            cleanUpMask()
-        }
+    private fun setMask(country: Country, prefix: String? = null) {
+        mCountry = country.alpha3code
+        setFlag(country.flag)
+        mMask = "+${country.phoneMask}"
+        addListener(prefix)
     }
 
-    fun getRawText(): String {
-        val editable = binding.editText.text
-        return editable!!.replace(Regex("[-\\s+]"), "")
+    fun getRawText(text: String? = null): String {
+        return if (text == null) {
+            val editable = binding.editText.text
+            editable!!.replace(Regex("[-\\s+]"), "")
+        } else {
+            text.replace(Regex("[-\\s+]"), "")
+        }
+
     }
 
     private fun addListener(prefix: String?) {
@@ -154,7 +157,8 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
                     currentCountry = null
                     applyMask(prefix)
                 }
-                currentCountry -> {}
+                currentCountry -> {
+                }
                 else -> {
                     currentCountry = mCountry
                     applyMask(prefix)
@@ -209,30 +213,62 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
 
         if (alpha3code != null) {
             val country = findCountryByAlphaCode(alpha3code)
-            if (country != null) {
-                mCountry = country.alpha3code
-                setFlag(country.flag)
-                if (number != null && country.prefixNumber?.firstOrNull { prefix ->
+            if (country != null && number != null) {
+                if (country.prefixNumber?.firstOrNull { prefix ->
                         number.replace(
                             Regex("[+\\s]"),
                             ""
                         ).startsWith(prefix)
                     } != null) {
-                    setMask("+${country.phoneMask}", number)
+                    setMask(country, number)
                 } else {
-                    setMask("+${country.phoneMask}", country.prefixNumber?.get(0))
+                    val countryByNumber = findCountryByNumber(number)
+                    if (countryByNumber != null) {
+                        setMask(countryByNumber, number)
+                    }
                 }
+            } else if (country != null && number == null) {
+                setMask(country, country.prefixNumber?.get(0))
             } else {
                 cleanUpMask(number)
+            }
+        } else if (number != null) {
+            val countryByNumber = findCountryByNumber(number)
+            if (countryByNumber != null) {
+                setMask(countryByNumber, number)
             }
         } else {
             cleanUpMask(number)
         }
+    }
 
+    private fun findCountryByNumber(number: String?): Country? {
+        val first_4_digits = number?.subSequence(0, 4)
+        var lastFound: Country? = null
+        var prefix = ""
+        println(first_4_digits)
+        first_4_digits?.forEach { digit ->
+            prefix += digit
+            val temp = searchForPrefix(prefix)
+            if (temp != null) {
+                lastFound = temp
+            }
+        }
+        return lastFound
+    }
+
+    private fun searchForPrefix(t: String): Country? {
+        if (t == "1") {
+            return US
+        }
+        return list?.firstOrNull { country ->
+            country.prefixNumber?.firstOrNull { prefix ->
+                prefix == t
+            } != null
+        }
     }
 
     private fun findCountryByAlphaCode(code: String): Country? {
-
         return list?.firstOrNull { code == it.alpha3code }
     }
 
@@ -249,6 +285,8 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
     fun initializeTextWatcher() {
         binding.editText.doOnTextChanged { text, start, before, count ->
 
+            maskFilledListener?.onTextChanged(getRawText(text.toString()))
+
             if (text!!.isEmpty()) {
                 cleanUpMask()
             } else if (text.length <= 6) {
@@ -256,7 +294,7 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
                 if (t != null && mCountry != t.alpha3code) {
                     setFlag(t.flag)
                     mCountry = t.alpha3code
-                    setMask("+${t.phoneMask!!}")
+                    setMask(t)
                     countryChangedListener?.onChanged(t)
                 }
 
@@ -310,6 +348,8 @@ class PhoneFormatter(context: Context, attr: AttributeSet) : ConstraintLayout(co
 
     interface IsMaskFilledListener {
         fun onFilled(isFilled: Boolean)
+        fun onTextChanged(text: String)
     }
+
 
 }
